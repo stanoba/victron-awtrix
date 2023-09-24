@@ -1,0 +1,696 @@
+[
+    {
+        "id": "7ecf0ca027461967",
+        "type": "tab",
+        "label": "Victron to LED Matrix display",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "265e8922368c1fc7",
+        "type": "victron-input-system",
+        "z": "7ecf0ca027461967",
+        "service": "com.victronenergy.system/0",
+        "path": "/Dc/Battery/Soc",
+        "serviceObj": {
+            "service": "com.victronenergy.system/0",
+            "name": "Venus system"
+        },
+        "pathObj": {
+            "path": "/Dc/Battery/Soc",
+            "type": "float",
+            "name": "Battery State of Charge (%)"
+        },
+        "initial": "",
+        "name": "",
+        "onlyChanges": false,
+        "x": 630,
+        "y": 340,
+        "wires": [
+            [
+                "57c62584995f2e1d"
+            ]
+        ]
+    },
+    {
+        "id": "f102c9fb5f54bda6",
+        "type": "mqtt out",
+        "z": "7ecf0ca027461967",
+        "name": "",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "c3f4db70.7e5728",
+        "x": 1370,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "9d30b1ec3b9e4434",
+        "type": "function",
+        "z": "7ecf0ca027461967",
+        "name": "Create msg BAT",
+        "func": "var duration = flow.get(\"duration\");\nvar lifetime = flow.get(\"lifetime\");\nvar prefix = flow.get(\"prefix\");\nmsg.topic = prefix+ \"/custom/victron_bat\";\n\nvar bat_power = flow.get('batpower');\n\nvar value = flow.get('batpercent');\nvar unit = \"%\";\nvar icon = 6363;\n\nif      (bat_power > 10){\n     icon = 54465;\n}else if (bat_power < 10){\n     icon = 55567;\n}else if(value > 61 && value < 80) {\n    //6362 = 80\n    icon = 6362;\n}else if(value > 41 && value < 60) {\n    //6361 = 60\n    icon = 6361;\n}else if(value > 21 && value < 40) {\n    //6360 = 40\n    icon = 6360;\n}else if(value < 21) {\n    //6359 = 20\n    icon = 6359;\n}\n\nmsg.payload = {\n    \"text\": value + ' ' + unit,\n    \"progress\": value,\n    \"icon\": icon, \n    \"repeat\": 2,\n    \"lifetime\": lifetime,\n    \"duration\": duration,\n    \"pushIcon\": 0 \n};\n\nnode.status({ fill: 'green', shape: 'ring', text: value + ' ' + unit});\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 340,
+        "wires": [
+            [
+                "f102c9fb5f54bda6"
+            ]
+        ]
+    },
+    {
+        "id": "fe76b65fb2190a08",
+        "type": "victron-input-system",
+        "z": "7ecf0ca027461967",
+        "service": "com.victronenergy.system/0",
+        "path": "/Ac/Grid/L1/Power",
+        "serviceObj": {
+            "service": "com.victronenergy.system/0",
+            "name": "Venus system"
+        },
+        "pathObj": {
+            "path": "/Ac/Grid/L1/Power",
+            "type": "float",
+            "name": "Grid L1 (W)"
+        },
+        "initial": "",
+        "name": "",
+        "onlyChanges": false,
+        "x": 580,
+        "y": 600,
+        "wires": [
+            [
+                "f63580b2d852a47c"
+            ]
+        ]
+    },
+    {
+        "id": "9972f205f442dfb6",
+        "type": "victron-input-system",
+        "z": "7ecf0ca027461967",
+        "service": "com.victronenergy.system/0",
+        "path": "/Ac/Grid/L2/Power",
+        "serviceObj": {
+            "service": "com.victronenergy.system/0",
+            "name": "Venus system"
+        },
+        "pathObj": {
+            "path": "/Ac/Grid/L2/Power",
+            "type": "float",
+            "name": "Grid L2 (W)"
+        },
+        "initial": "",
+        "name": "",
+        "onlyChanges": false,
+        "x": 580,
+        "y": 680,
+        "wires": [
+            [
+                "08189428c00fcaf3"
+            ]
+        ]
+    },
+    {
+        "id": "cd5d7e71ceafb14d",
+        "type": "victron-input-system",
+        "z": "7ecf0ca027461967",
+        "service": "com.victronenergy.system/0",
+        "path": "/Ac/Grid/L3/Power",
+        "serviceObj": {
+            "service": "com.victronenergy.system/0",
+            "name": "Venus system"
+        },
+        "pathObj": {
+            "path": "/Ac/Grid/L3/Power",
+            "type": "float",
+            "name": "Grid L3 (W)"
+        },
+        "initial": "",
+        "name": "",
+        "onlyChanges": false,
+        "x": 580,
+        "y": 760,
+        "wires": [
+            [
+                "4a3ef06b0c6fc156"
+            ]
+        ]
+    },
+    {
+        "id": "08189428c00fcaf3",
+        "type": "change",
+        "z": "7ecf0ca027461967",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "L2",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 870,
+        "y": 680,
+        "wires": [
+            [
+                "d112d3b703459bde",
+                "0bfac1960f164068"
+            ]
+        ]
+    },
+    {
+        "id": "d112d3b703459bde",
+        "type": "function",
+        "z": "7ecf0ca027461967",
+        "name": "Sum Total Consumption",
+        "func": "msg.payload = (flow.get('L1') + flow.get('L2') + flow.get('L3'));\nmsg.payload = msg.payload.toFixed(0);\nvar prefix = flow.get(\"prefix\");\nmsg.topic = prefix+ \"/custom/victron_grid\";\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1130,
+        "y": 680,
+        "wires": [
+            [
+                "a540887c2e137f78"
+            ]
+        ]
+    },
+    {
+        "id": "4a3ef06b0c6fc156",
+        "type": "change",
+        "z": "7ecf0ca027461967",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "L3",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 870,
+        "y": 760,
+        "wires": [
+            [
+                "d112d3b703459bde",
+                "0bfac1960f164068"
+            ]
+        ]
+    },
+    {
+        "id": "f63580b2d852a47c",
+        "type": "change",
+        "z": "7ecf0ca027461967",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "L1",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 870,
+        "y": 600,
+        "wires": [
+            [
+                "d112d3b703459bde"
+            ]
+        ]
+    },
+    {
+        "id": "a540887c2e137f78",
+        "type": "rbe",
+        "z": "7ecf0ca027461967",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 1330,
+        "y": 680,
+        "wires": [
+            [
+                "4f05cc7186ac2b7e"
+            ]
+        ]
+    },
+    {
+        "id": "2186422227d9616e",
+        "type": "victron-input-system",
+        "z": "7ecf0ca027461967",
+        "service": "com.victronenergy.system/0",
+        "path": "/Dc/Pv/Power",
+        "serviceObj": {
+            "service": "com.victronenergy.system/0",
+            "name": "Venus system"
+        },
+        "pathObj": {
+            "path": "/Dc/Pv/Power",
+            "type": "float",
+            "name": "MPPTs - power (W)"
+        },
+        "initial": "",
+        "name": "",
+        "onlyChanges": false,
+        "x": 600,
+        "y": 180,
+        "wires": [
+            [
+                "7f1c5c3aaf620429"
+            ]
+        ]
+    },
+    {
+        "id": "7f1c5c3aaf620429",
+        "type": "function",
+        "z": "7ecf0ca027461967",
+        "name": "Create msg MPPT",
+        "func": "var duration = flow.get(\"duration\");\nvar lifetime = flow.get(\"lifetime\");\nvar prefix = flow.get(\"prefix\");\nmsg.topic = prefix+ \"/custom/victron_mppt\";\n\nvar value = msg.payload;\nvar unit = \"W\";\n\nif(value > 1000){\n    value = value/1000;\n    value = value.toFixed(1);\n    unit = \"kW\";\n}else{\n    value = value.toFixed(0);\n}\n\nmsg.payload = {\n    \"text\": value + ' ' + unit,\n    \"icon\": 49139,\n    \"repeat\": 2,\n    \"lifetime\": lifetime,\n    \"duration\": duration,\n    \"pushIcon\": 0 \n};\n\n\nnode.status({ fill: 'green', shape: 'ring', text: value + ' ' + unit});\n\n\n// stop sending msg when not charging\nif(Number(value) > 0){\nreturn msg;\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1150,
+        "y": 180,
+        "wires": [
+            [
+                "f102c9fb5f54bda6"
+            ]
+        ]
+    },
+    {
+        "id": "4f05cc7186ac2b7e",
+        "type": "function",
+        "z": "7ecf0ca027461967",
+        "name": "Create msg GRID",
+        "func": "var duration = flow.get(\"duration\");\nvar lifetime = flow.get(\"lifetime\");\nvar value = msg.payload;\nvar unit = \"W\";\n\nif      (value < 0){\n     icon = 54367;\n}else{\n     icon = 53743;\n}\n\nmsg.payload = {\n    \"text\": value + ' ' + unit,\n    \"icon\": icon, \n    \"repeat\": 2, \n    \"lifetime\": lifetime,\n    \"duration\": duration,\n    \"pushIcon\": 0 \n};\n\nnode.status({ fill: 'green', shape: 'ring', text: value + ' ' + unit});\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1150,
+        "y": 500,
+        "wires": [
+            [
+                "f102c9fb5f54bda6"
+            ]
+        ]
+    },
+    {
+        "id": "0e4d781eead6dac3",
+        "type": "victron-input-system",
+        "z": "7ecf0ca027461967",
+        "service": "com.victronenergy.system/0",
+        "path": "/Ac/Consumption/L1/Power",
+        "serviceObj": {
+            "service": "com.victronenergy.system/0",
+            "name": "Venus system"
+        },
+        "pathObj": {
+            "path": "/Ac/Consumption/L1/Power",
+            "type": "float",
+            "name": "AC Consumption L1 (W)"
+        },
+        "initial": "",
+        "name": "",
+        "onlyChanges": false,
+        "x": 610,
+        "y": 860,
+        "wires": [
+            [
+                "ec3ac62847631381"
+            ]
+        ]
+    },
+    {
+        "id": "ec3ac62847631381",
+        "type": "change",
+        "z": "7ecf0ca027461967",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "L1L",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 870,
+        "y": 860,
+        "wires": [
+            [
+                "0bfac1960f164068"
+            ]
+        ]
+    },
+    {
+        "id": "0bfac1960f164068",
+        "type": "function",
+        "z": "7ecf0ca027461967",
+        "name": "Sum Total Consumption",
+        "func": "msg.payload = (flow.get('L1L') + flow.get('L2') + flow.get('L3'));\nmsg.payload = msg.payload.toFixed(0);\nvar prefix = flow.get(\"prefix\");\nmsg.topic = prefix+ \"/custom/victron_consumption\";\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1130,
+        "y": 860,
+        "wires": [
+            [
+                "9091101afaa8e813"
+            ]
+        ]
+    },
+    {
+        "id": "9091101afaa8e813",
+        "type": "rbe",
+        "z": "7ecf0ca027461967",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 1330,
+        "y": 860,
+        "wires": [
+            [
+                "82cc354e1c88c511"
+            ]
+        ]
+    },
+    {
+        "id": "82cc354e1c88c511",
+        "type": "function",
+        "z": "7ecf0ca027461967",
+        "name": "Create msg CONSUMPTION",
+        "func": "var duration = flow.get(\"duration\");\nvar lifetime = flow.get(\"lifetime\");\nvar value = msg.payload;\nvar unit = \"W\";\n\nif(value > 1000){\n    value = value/1000;\n    value = value.toFixed(1);\n    unit = \"kW\";\n}\n\nmsg.payload = {\n    \"text\": value + ' ' + unit,\n    \"icon\": 44432, \n    \"repeat\": 2, \n    \"lifetime\": lifetime,\n    \"duration\": duration,\n    \"pushIcon\": 0 \n};\n\nnode.status({ fill: 'green', shape: 'ring', text: value + ' ' + unit});\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 580,
+        "wires": [
+            [
+                "f102c9fb5f54bda6"
+            ]
+        ]
+    },
+    {
+        "id": "1bdcabf145280d8a",
+        "type": "change",
+        "z": "7ecf0ca027461967",
+        "name": "SET vars",
+        "rules": [
+            {
+                "t": "set",
+                "p": "duration",
+                "pt": "flow",
+                "to": "5",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "lifetime",
+                "pt": "flow",
+                "to": "120",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "prefix",
+                "pt": "flow",
+                "to": "awtrix",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 700,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3582f73e504322b6",
+        "type": "inject",
+        "z": "7ecf0ca027461967",
+        "name": "Start",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 530,
+        "y": 500,
+        "wires": [
+            [
+                "1bdcabf145280d8a"
+            ]
+        ]
+    },
+    {
+        "id": "65ac25c9e11836c9",
+        "type": "comment",
+        "z": "7ecf0ca027461967",
+        "name": "Send data from Victron Cerbo GX to awtrix-light matrix display",
+        "info": "",
+        "x": 860,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "d170e2d1c7ef53c6",
+        "type": "function",
+        "z": "7ecf0ca027461967",
+        "name": "Test notification",
+        "func": "var prefix = flow.get(\"prefix\");\nmsg.topic = prefix+ \"/notify\";\nvar msg_text = msg.payload;\n\nmsg.payload = { \n    \"text\": msg_text,\n    \"wakeup\": 1,\n    \"icon\": 33655,\n    \"repeat\": 2,\n    \"duration\": 8,\n    \"pushIcon\": 0 \n};\n\nnode.status({ fill: 'green', shape: 'ring', text: msg_text});\n\nreturn msg;\n\n\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1140,
+        "y": 420,
+        "wires": [
+            [
+                "f102c9fb5f54bda6"
+            ]
+        ]
+    },
+    {
+        "id": "e9473ae3e742fd94",
+        "type": "inject",
+        "z": "7ecf0ca027461967",
+        "name": "Notify",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "1",
+        "topic": "",
+        "payload": "Test message",
+        "payloadType": "str",
+        "x": 530,
+        "y": 420,
+        "wires": [
+            [
+                "d170e2d1c7ef53c6"
+            ]
+        ]
+    },
+    {
+        "id": "a5e63bb883318b10",
+        "type": "victron-input-system",
+        "z": "7ecf0ca027461967",
+        "service": "com.victronenergy.system/0",
+        "path": "/Dc/Battery/Power",
+        "serviceObj": {
+            "service": "com.victronenergy.system/0",
+            "name": "Venus system"
+        },
+        "pathObj": {
+            "path": "/Dc/Battery/Power",
+            "type": "float",
+            "name": "Battery Power (W)"
+        },
+        "initial": "",
+        "name": "",
+        "onlyChanges": false,
+        "x": 600,
+        "y": 260,
+        "wires": [
+            [
+                "c82bdafce1b63b59"
+            ]
+        ]
+    },
+    {
+        "id": "c82bdafce1b63b59",
+        "type": "change",
+        "z": "7ecf0ca027461967",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "batpower",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 930,
+        "y": 260,
+        "wires": [
+            [
+                "9d30b1ec3b9e4434"
+            ]
+        ]
+    },
+    {
+        "id": "51bd861e2db13b1b",
+        "type": "debug",
+        "z": "7ecf0ca027461967",
+        "name": "debug 1",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1460,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "57c62584995f2e1d",
+        "type": "change",
+        "z": "7ecf0ca027461967",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "batpercent",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 930,
+        "y": 340,
+        "wires": [
+            [
+                "9d30b1ec3b9e4434"
+            ]
+        ]
+    },
+    {
+        "id": "c3f4db70.7e5728",
+        "type": "mqtt-broker",
+        "name": "Cerbo GX",
+        "broker": "127.0.0.1",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    }
+]
