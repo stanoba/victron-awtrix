@@ -28,3 +28,6 @@ Node-RED flow for Victron [Venus GX](https://www.victronenergy.com/live/venus-os
 ## Video
 <a href="https://www.youtube.com/watch?v=HKkA-Dnipp0" target="_blank"><img src="display.jpg" width="700" alt="Awtrix display"></a>
 
+## AWTRIX Flows
+
+Link: <a href="https://flows.blueforcer.de/flow/rM3xoBrvo8Lz" target="_blank">https://flows.blueforcer.de/flow/rM3xoBrvo8Lz</a>
